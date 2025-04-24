@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Add Movie</title>
+  <link rel="stylesheet" href="styles/style.css" />
+</head>
+<body>
+  <h1>Add New Movie</h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="view.html">View Movies</a>
+    <a href="edit.html">Edit Movie</a>
+  </nav>
+
+  <form id="addForm">
+    <input type="text" name="title" placeholder="Title" required />
+    <input type="text" name="director" placeholder="Director" required />
+    <input type="number" name="year" placeholder="Year" required />
+    <input type="text" name="genre" placeholder="Genre" required />
+    <button type="submit">Add Movie</button>
+  </form>
+
+  <script>
+    document.getElementById("addForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const movie = {
+        title: form.title.value,
+        director: form.director.value,
+        year: form.year.value,
+        genre: form.genre.value
+      };
+
+      const res = await fetch("https://module4-api.onrender.com/api/v1/movies", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(movie)
+      });
+
+      if (res.ok) {
+        alert("Movie added successfully!");
+        form.reset();
+      } else {
+        alert("Failed to add movie.");
+      }
+    });
+  </script>
+</body>
+</html>
