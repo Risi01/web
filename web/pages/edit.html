@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Edit Movie</title>
+  <link rel="stylesheet" href="../styles/style.css" />
+</head>
+<body>
+  <h1>Edit Movie</h1>
+  <nav>
+    <a href="../index.html">Home</a>
+    <a href="view.html">View Movies</a>
+    <a href="add.html">Add Movie</a>
+  </nav>
+
+  <select id="movieSelect"></select>
+  <form id="editForm" style="margin-top:20px;">
+    <input type="text" name="title" placeholder="Title" required />
+    <input type="text" name="director" placeholder="Director" required />
+    <input type="number" name="year" placeholder="Year" required />
+    <input type="text" name="genre" placeholder="Genre" required />
+    <button type="submit">Update Movie</button>
+  </form>
+
+  <script>
+    let selectedId = null;
+
+    fetch("https://module4-api.onrender.com/api/v1/movies")
+      .then(res => res.json())
+      .then(data => {
+        const select = document.getElementById("movieSelect");
+        data.forEach(movie => {
+          const option = document.createElement("option");
+          option.value = movie.id;
+          option.textContent = movie.title;
+          select.appendChild(option);
+        });
+
+        select.addEventListener("change", () => {
+          const movie = data.find(m => m.id == select.value);
+          if (movie) {
+            selectedId = movie.id;
+            const form = document.getElementById("editForm");
+            form.title.value = movie.title;
+            form.director.value = movie.director;
+            form.year.value = movie.year;
+            form.genre.value = movie.genre;
+          }
+        });
+
+        select.dispatchEvent(new Event("change"));
+      });
+
+    document.getElementById("editForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const form = e.target;
+
+      const updated = {
+        title: form.title.value,
+        director: form.director.value,
+        year: form.year.value,
+        genre: form.genre.value
+      };
+
+      const res = await fetch(`https://module4-api.onrender.com/api/v1/movies/${selectedId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updated)
+      });
+
+      if (res.ok) {
+        alert("Movie updated successfully!");
+      } else {
+        alert("Update failed.");
+      }
+    });
+  </script>
+</body>
+</html>
