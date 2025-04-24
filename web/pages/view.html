@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>View Movies</title>
+  <link rel="stylesheet" href="../styles/style.css" />
+</head>
+<body>
+  <h1>All Movies</h1>
+  <nav>
+    <a href="../index.html">Home</a>
+    <a href="add.html">Add Movie</a>
+    <a href="edit.html">Edit Movie</a>
+  </nav>
+  <ul id="movieList"></ul>
+
+  <script>
+    fetch("https://module4-api.onrender.com/api/v1/movies")
+      .then(res => res.json())
+      .then(data => {
+        const list = document.getElementById("movieList");
+        data.forEach(movie => {
+          const li = document.createElement("li");
+          li.textContent = `${movie.title} (${movie.year}) - ${movie.director} [${movie.genre}]`;
+          list.appendChild(li);
+        });
+      });
+  </script>
+</body>
+</html>
